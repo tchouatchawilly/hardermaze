@@ -1,6 +1,6 @@
 package com.training.app.actors
 
-import akka.actor.{Actor, Props}
+import akka.actor.{Actor, ActorRef, Props}
 import akka.event.Logging
 
 /**
@@ -9,7 +9,15 @@ import akka.event.Logging
   */
 class GeneratePatternActor extends Actor {
   val log = Logging(context.system, this)
-  val validatePatternActor = context.actorOf(Props[ValidatePatternActor], name = "validatePatternActor")
+  //  var validatePatternActor = context.actorOf(Props[ValidatePatternActor], name = actorName)
+  var validatePatternActor: ActorRef = null
+  var actorName = ""
+
+  def this(actorid: String) = {
+    this()
+    this.actorName = actorid
+    this.validatePatternActor = context.actorOf(Props[ValidatePatternActor], name = this.actorName)
+  }
 
   def receive = {
     case (patterns: List[Int]) => {
